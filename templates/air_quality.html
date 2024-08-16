@@ -1,0 +1,42 @@
+<!-- vnproject/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Quality</title>
+</head>
+<body>
+    <h1>Air Quality Index</h1>
+    <p id="aqi"></p>
+    <p id="co"></p>
+    <p id="no2"></p>
+    <!-- 추가 정보 표시 -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function fetchAirQualityData() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+
+                        // Django API로 요청 보내기
+                        fetch(`/api/air-quality/?lat=${lat}&lon=${lon}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                document.getElementById('aqi').innerText = `AQI: ${data.main.aqi}`;
+                                document.getElementById('co').innerText = `CO: ${data.components.co} μg/m3`;
+                                document.getElementById('no2').innerText = `NO2: ${data.components.no2} μg/m3`;
+                                // 추가 데이터도 동일하게 처리
+                            });
+                    });
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+
+            fetchAirQualityData();
+        });
+    </script>
+</body>
+</html>
