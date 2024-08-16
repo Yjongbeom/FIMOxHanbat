@@ -1,42 +1,594 @@
-<!-- vnproject/templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Air Quality</title>
+    <title>Bookmark and Map Navigation with Geocoding</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+        #sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            right: -300px; /* 사이드바 숨기기 */
+            top: 0;
+            background: #f4f4f4;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        #sidebar.active {
+            right: 0; /* 사이드바 보이기 */
+        }
+        #sidebar h2 {
+            margin-top: 0;
+        }
+        #loginButton, #registerButton, #bookmarkButton, #logoutButton {
+            position: fixed;
+            top: 15px;
+            z-index: 1001;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        #loginButton {
+            right: 220px; /* 여유 간격 추가 */
+        }
+
+        #registerButton {
+            right: 140px; /* 여유 간격 추가 */
+        }
+
+        #logoutButton {
+            right: 140px; /* 여유 간격 추가 */
+            display: none; /* 로그아웃 버튼은 초기에는 숨김 */
+        }
+
+        #bookmarkButton {
+            right: 20px;
+        }
+        #closeSidebar {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .bookmark-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #e0e0e0;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .delete-bookmark {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #bookmarkForm {
+            margin-bottom: 15px;
+        }
+        #bookmarkForm input {
+            width: calc(100% - 20px);
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #currentLocationButton {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 1001;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #searchResults {
+            background: white;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+            z-index: 1002;
+        }
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .search-result-item:hover {
+            background-color: #ddd;
+        }
+        #okButton {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 모달 스타일 */
+        #authModal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        #authModalContent {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Air Quality Index</h1>
-    <p id="aqi"></p>
-    <p id="co"></p>
-    <p id="no2"></p>
-    <!-- 추가 정보 표시 -->
+    <h1>Search Location and Bookmark</h1>
+    <p id="air_quality_status">대기 오염 수준: </p>
 
+    <!-- 로그인 및 회원가입 버튼 -->
+    <button id="loginButton">Login</button>
+    <button id="registerButton">Register</button>
+    <button id="logoutButton">Logout</button>
+
+    <!-- 북마크 버튼 -->
+    <button id="bookmarkButton">Bookmarks</button>
+
+    <!-- 로그인 및 회원가입 모달 -->
+    <div id="authModal">
+        <div id="authModalContent">
+            <span class="close">&times;</span>
+            <h2 id="authModalTitle">Login</h2>
+            <form id="authForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="submit" id="authSubmitButton">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 북마크 사이드바 -->
+    <div id="sidebar">
+        <h2>Bookmarks</h2>
+        <div id="bookmarkForm">
+            <input type="text" id="locationName" placeholder="Enter location name">
+            <div id="searchResults"></div>
+            <button id="searchLocation">Search Locations</button>
+            <button id="okButton">OK</button>
+        </div>
+        <div id="bookmarkList"></div>
+        <button id="closeSidebar">Close</button>
+    </div>
+
+    <!-- 지도 -->
+    <div id="map"></div>
+    <button id="currentLocationButton">Current Location</button>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            function fetchAirQualityData() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
+        const apiKey = 'your_api_key';
+        const geocodeUrl = 'https://apis.wemap.asia/geocode-1/search';
+        let bookmarks = []; // 북마크 목록 저장
+        let currentLat = 21.0285;  // 초기 위치 (하노이)
+        let currentLon = 105.8542;
+        let selectedLocation = null;  // 선택된 위치를 저장할 변수
+        let loggedInUser = null;
 
-                        // Django API로 요청 보내기
-                        fetch(`/api/air-quality/?lat=${lat}&lon=${lon}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById('aqi').innerText = `AQI: ${data.main.aqi}`;
-                                document.getElementById('co').innerText = `CO: ${data.components.co} μg/m3`;
-                                document.getElementById('no2').innerText = `NO2: ${data.components.no2} μg/m3`;
-                                // 추가 데이터도 동일하게 처리
-                            });
-                    });
-                } else {
-                    alert("Geolocation is not supported by this browser.");
-                }
-            }
+        const map = L.map('map').setView([currentLat, currentLon], 17); // 초기 줌 레벨을 더 높임
 
-            fetchAirQualityData();
+        // Wemap 래스터 타일 추가
+        L.tileLayer(`https://apis.wemap.asia/raster-tiles/styles/osm-bright/{z}/{x}/{y}@2x.png?key=${apiKey}`, {
+            maxZoom: 22,
+            tileSize: 512,
+            zoomOffset: -1,
+            detectRetina: true
+        }).addTo(map);
+
+        // 사용자 위치 마커 생성
+        const marker = L.marker([currentLat, currentLon]).addTo(map);
+
+        // 페이지 로드 시 현재 위치로 이동
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLocation();
         });
+
+        // 로그인 및 회원가입 모달 기능
+        const authModal = document.getElementById("authModal");
+        const loginButton = document.getElementById("loginButton");
+        const registerButton = document.getElementById("registerButton");
+        const logoutButton = document.getElementById("logoutButton");
+        const closeModal = document.getElementsByClassName("close")[0];
+        const authForm = document.getElementById("authForm");
+
+        loginButton.onclick = function() {
+            authModal.style.display = "block";
+            document.getElementById("authModalTitle").innerText = "Login";
+            document.getElementById("authSubmitButton").innerText = "Login";
+            // 초기화
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        registerButton.onclick = function() {
+            authModal.style.display = "block";
+            document.getElementById("authModalTitle").innerText = "Register";
+            document.getElementById("authSubmitButton").innerText = "Register";
+            // 초기화
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        logoutButton.onclick = function() {
+            loggedInUser = null;
+            alert('Logged out successfully!');
+            logoutButton.style.display = 'none';
+            loginButton.style.display = 'inline';
+            registerButton.style.display = 'inline';
+            document.getElementById('bookmarkButton').style.display = 'none';
+            authForm.reset(); // 로그아웃 시 로그인 필드 초기화
+        }
+
+        closeModal.onclick = function() {
+            authModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target === authModal) {
+                authModal.style.display = "none";
+            }
+        }
+
+        authForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(authForm);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            const isRegistering = document.getElementById("authSubmitButton").innerText === "Register";
+            const url = isRegistering ? '/register/' : '/login/';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),  // 이 부분을 변경하여 사용자 입력 데이터를 전송
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(isRegistering ? 'Registration successful!' : 'Login successful!');
+                    authModal.style.display = 'none';
+                    authForm.reset(); // 로그인 필드 초기화
+                    loggedInUser = data.username;
+                    loginButton.style.display = 'none';
+                    registerButton.style.display = 'none';
+                    logoutButton.style.display = 'inline';
+                    document.getElementById('bookmarkButton').style.display = 'inline';
+                    if (!isRegistering) {
+                        // 로그인 후 사용자 북마크 로드
+                        loadBookmarks(loggedInUser);
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert(`Failed to ${isRegistering ? 'register' : 'login'}. ${error.message}`);
+            });
+        });
+
+        function loadBookmarks(username) {
+            fetch(`/bookmarks/?username=${username}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load bookmarks');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    bookmarks = data;
+                    renderBookmarks();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load bookmarks.');
+                });
+        }
+
+        // 북마크 버튼 클릭 시 사이드바 토글
+        document.getElementById('bookmarkButton').addEventListener('click', () => {
+            if (!loggedInUser) {
+                alert('You need to login first.');
+                return;
+            }
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+
+            // Search input and results reset
+            document.getElementById('locationName').value = ''; // Clear the search input
+            document.getElementById('searchResults').innerHTML = ''; // Clear the search results
+        });
+
+        // 사이드바 닫기
+        document.getElementById('closeSidebar').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+
+        // 현재 위치 버튼 클릭 시 위치 업데이트
+        document.getElementById('currentLocationButton').addEventListener('click', () => {
+            updateLocation();
+        });
+
+        function updateAirQuality(lat, lon) {
+            fetch(`/api/air-quality/?lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    const aqi = data.main.aqi;
+                    let airQualityStatus = '';
+
+                    if (aqi >= 1 && aqi <= 50) {
+                        airQualityStatus = '대기 오염 수준: 좋음 (Good)';
+                    } else if (aqi >= 51 && aqi <= 100) {
+                        airQualityStatus = '대기 오염 수준: 보통 (Moderate)';
+                    } else if (aqi >= 101 && aqi <= 150) {
+                        airQualityStatus = '대기 오염 수준: 민감군에게 나쁨 (Unhealthy for Sensitive Groups)';
+                    } else if (aqi >= 151 && aqi <= 200) {
+                        airQualityStatus = '대기 오염 수준: 나쁨 (Unhealthy)';
+                    } else if (aqi >= 201 && aqi <= 300) {
+                        airQualityStatus = '대기 오염 수준: 매우 나쁨 (Very Unhealthy)';
+                    } else if (aqi > 300) {
+                        airQualityStatus = '대기 오염 수준: 위험 (Hazardous)';
+                    }
+
+                    document.getElementById('air_quality_status').innerText = airQualityStatus;
+                });
+        }
+
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    currentLat = position.coords.latitude;
+                    currentLon = position.coords.longitude;
+
+                    marker.setLatLng([currentLat, currentLon]);
+                    map.setView([currentLat, currentLon]);
+
+                    updateAirQuality(currentLat, currentLon);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // 지구 반경 (킬로미터)
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (1 - Math.cos(dLon)) / 2;
+
+            return R * 2 * Math.asin(Math.sqrt(a));
+        }
+
+        // 검색 버튼에 이벤트 리스너 추가
+        document.getElementById('searchLocation').addEventListener('click', () => {
+            const locationName = document.getElementById('locationName').value.trim();
+            if (locationName) {
+                searchLocations(locationName);
+            } else {
+                alert('Please enter a location name.');
+            }
+        });
+
+        function searchLocations(locationName) {
+            fetch(`${geocodeUrl}?text=${locationName}&key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    const searchResults = document.getElementById('searchResults');
+                    searchResults.innerHTML = ''; // 기존 결과 초기화
+                    if (data.features && data.features.length > 0) {
+                        const sortedFeatures = data.features.map(feature => {
+                            const lat = feature.geometry.coordinates[1];
+                            const lon = feature.geometry.coordinates[0];
+                            const distance = calculateDistance(currentLat, currentLon, lat, lon);
+                            return { feature, distance };
+                        }).sort((a, b) => a.distance - b.distance);
+
+                        sortedFeatures.forEach(({ feature, distance }) => {
+                            const name = feature.properties.name;
+                            const lat = feature.geometry.coordinates[1];
+                            const lon = feature.geometry.coordinates[0];
+
+                            const item = document.createElement('div');
+                            item.className = 'search-result-item';
+                            item.textContent = `${name} - ${distance.toFixed(2)} km`;
+                            item.addEventListener('click', () => {
+                                map.setView([lat, lon], 18); // 검색 결과 클릭 시 더 높은 줌 레벨로 이동
+                                marker.setLatLng([lat, lon]);
+                                selectedLocation = { name, lat, lon }; // 선택된 위치 저장
+                                document.getElementById('okButton').style.display = 'block'; // OK 버튼 표시
+                                searchResults.innerHTML = ''; // 선택 후 검색 결과 목록 숨기기
+                            });
+                            searchResults.appendChild(item);
+                        });
+                    } else {
+                        alert('No location found matching that name.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching location:', error);
+                    alert('Error fetching location.');
+                });
+        }
+
+        // OK 버튼 클릭 시 북마크에 추가
+        document.getElementById('okButton').addEventListener('click', () => {
+            if (selectedLocation) {
+                addBookmark(selectedLocation.name, selectedLocation.lat, selectedLocation.lon);
+                selectedLocation = null; // 선택된 위치 초기화
+                document.getElementById('okButton').style.display = 'none'; // OK 버튼 숨기기
+            } else {
+                alert('No location selected.');
+            }
+        });
+
+        function addBookmark(name, lat, lon) {
+            bookmarks.push({ name, lat, lon });
+            renderBookmarks();
+            saveBookmarkToServer(name, lat, lon); // 북마크를 서버에 저장
+        }
+
+        function saveBookmarkToServer(name, lat, lon) {
+            fetch('/bookmarks/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: loggedInUser, bookmark: { name, lat, lon } }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to save bookmark');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Bookmark saved:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save bookmark.');
+            });
+        }
+
+        function renderBookmarks() {
+            const bookmarkList = document.getElementById('bookmarkList');
+            bookmarkList.innerHTML = ''; // 기존 항목 초기화
+
+            bookmarks.forEach((bookmark, index) => {
+                const item = document.createElement('div');
+                item.className = 'bookmark-item';
+
+                const nameElement = document.createElement('span');
+                nameElement.textContent = bookmark.name;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-bookmark';
+                deleteButton.addEventListener('click', () => {
+                    bookmarks.splice(index, 1);
+                    renderBookmarks();
+                    deleteBookmarkFromServer(bookmark);
+                });
+
+                item.appendChild(nameElement);
+                item.appendChild(deleteButton);
+
+                item.addEventListener('click', () => {
+                    history.pushState({ lat: bookmark.lat, lon: bookmark.lon }, bookmark.name, `#${bookmark.name}`);
+                    map.setView([bookmark.lat, bookmark.lon], 18); // 북마크 클릭 시 더 높은 줌 레벨로 이동
+                    marker.setLatLng([bookmark.lat, bookmark.lon]);
+                    updateAirQuality(bookmark.lat, bookmark.lon);
+                    document.getElementById('sidebar').classList.remove('active');
+                });
+
+                bookmarkList.appendChild(item);
+            });
+        }
+
+        function deleteBookmarkFromServer(bookmark) {
+            fetch(`/bookmarks/?username=${loggedInUser}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: bookmark.name, lat: bookmark.lat, lon: bookmark.lon }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete bookmark');
+                }
+                console.log('Bookmark deleted');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete bookmark.');
+            });
+        }
+
+        // 뒤로가기 이벤트 처리
+        window.onpopstate = function(event) {
+            if (event.state) {
+                const lat = event.state.lat;
+                const lon = event.state.lon;
+                map.setView([lat, lon], 18); // 뒤로가기 클릭 시 더 높은 줌 레벨로 이동
+                marker.setLatLng([lat, lon]);
+                updateAirQuality(lat, lon);
+            }
+        };
     </script>
 </body>
 </html>
