@@ -12,7 +12,7 @@ from .serializers import UserSerializer
 
 def air_quality_view(request):
     context = {
-        'api_key' : settings.FRONT_API_KEY,
+        'api_key': settings.FRONT_API_KEY
     }
 
     return render(request, 'air_quality.html', context)

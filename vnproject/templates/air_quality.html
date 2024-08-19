@@ -143,7 +143,8 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
             padding-top: 60px;
         }
 
@@ -154,7 +155,6 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 400px;
-            min-width: 300px; /* 최소 너비를 설정하여 일정하게 유지 */
         }
 
         .close {
@@ -170,58 +170,11 @@
             text-decoration: none;
             cursor: pointer;
         }
-
-        /* AQI 위젯 스타일 */
-        #airQualityWidget {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 20px;
-            max-width: 500px;
-            text-align: left;
-            position: absolute;
-            right: 10px;
-            bottom: 80px;
-            z-index: 1002;
-        }
-        #airQualityWidget .content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            font-size: 16px;
-        }
-        #airQualityWidget .content span {
-            margin-top: 5px;
-        }
-        #airQualityWidget .slider {
-            margin-top: 10px;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(to right, #00e400, #ffff00, #ff7e00, #ff0000, #8f3f97, #7e0023);
-            position: relative;
-            border-radius: 5px;
-        }
-        #sliderPointer {
-            width: 15px;
-            height: 15px;
-            background: black;
-            border-radius: 50%;
-            position: absolute;
-            top: -3px;
-            transition: left 0.3s ease; /* 위치 변경에 애니메이션 효과 추가 */
-        }
-        #airQualityWidget .message {
-            margin-top: 10px;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
     <h1>Search Location and Bookmark</h1>
+    <p id="air_quality_status">대기 오염 수준: </p>
 
     <!-- 로그인 및 회원가입 버튼 -->
     <button id="loginButton">Login</button>
@@ -263,22 +216,9 @@
     <div id="map"></div>
     <button id="currentLocationButton">Current Location</button>
 
-    <!-- AQI 위젯 -->
-    <div id="airQualityWidget">
-        <div class="content">
-            <div id="airQualityIndex" style="font-size: 30px;">50</div>
-            <div id="airQualityStatus">대기질이 보통입니다.</div>
-            <div class="slider" id="airQualitySlider">
-                <div id="sliderPointer"></div>
-            </div>
-            <div class="message" id="airQualityMessage">일반 대중에게는 큰 문제가 없습니다.</div>
-        </div>
-    </div>
-
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
     <script>
-        const api_key = '{{ api_key }}';
+        const apiKey = 'your_api_key';
         const geocodeUrl = 'https://apis.wemap.asia/geocode-1/search';
         let bookmarks = []; // 북마크 목록 저장
         let currentLat = 21.0285;  // 초기 위치 (하노이)
@@ -289,7 +229,7 @@
         const map = L.map('map').setView([currentLat, currentLon], 17); // 초기 줌 레벨을 더 높임
 
         // Wemap 래스터 타일 추가
-        L.tileLayer(`https://apis.wemap.asia/raster-tiles/styles/osm-bright/{z}/{x}/{y}@2x.png?key=${api_key}`, {
+        L.tileLayer(`https://apis.wemap.asia/raster-tiles/styles/osm-bright/{z}/{x}/{y}@2x.png?key=${apiKey}`, {
             maxZoom: 22,
             tileSize: 512,
             zoomOffset: -1,
@@ -443,98 +383,28 @@
             updateLocation();
         });
 
-        function calculateAQI(concentration, breakpoints) {
-            for (let i = 0; i < breakpoints.length - 1; i++) {
-                if (concentration >= breakpoints[i][0] && concentration <= breakpoints[i][1]) {
-                    const c_low = breakpoints[i][0];
-                    const c_high = breakpoints[i][1];
-                    const i_low = breakpoints[i][2];
-                    const i_high = breakpoints[i][3];
-                    const aqi = ((i_high - i_low) / (c_high - c_low)) * (concentration - c_low) + i_low;
-                    return Math.round(aqi);
-                }
-            }
-            return null;
-        }
-
-        function updateAirQualityWidget(pm25, pm10) {
-            const pm25_breakpoints = [
-                [0.0, 12.0, 0, 50],
-                [12.1, 35.4, 51, 100],
-                [35.5, 55.4, 101, 150],
-                [55.5, 150.4, 151, 200],
-                [150.5, 250.4, 201, 300],
-                [250.5, 350.4, 301, 400],
-                [350.5, 500.4, 401, 500],
-            ];
-
-            const pm10_breakpoints = [
-                [0, 54, 0, 50],
-                [55, 154, 51, 100],
-                [155, 254, 101, 150],
-                [255, 354, 151, 200],
-                [355, 424, 201, 300],
-                [425, 504, 301, 400],
-                [505, 604, 401, 500],
-            ];
-
-            const aqi_pm25 = calculateAQI(pm25, pm25_breakpoints);
-            const aqi_pm10 = calculateAQI(pm10, pm10_breakpoints);
-
-            // 최종 AQI는 두 오염물질 중 더 높은 값으로 결정됩니다.
-            const final_aqi = Math.max(aqi_pm25, aqi_pm10);
-
-            const airQualityIndex = document.getElementById("airQualityIndex");
-            const airQualityStatus = document.getElementById("airQualityStatus");
-            const airQualityMessage = document.getElementById("airQualityMessage");
-            const sliderPointer = document.getElementById("sliderPointer");
-            const airQualityWidget = document.getElementById("airQualityWidget");
-
-            let emojiIndex, statusMessage, backgroundColor;
-
-            if (final_aqi <= 50) {
-                emojiIndex = 1;
-                statusMessage = "Good";
-                backgroundColor = "#00e400"; // Green
-            } else if (final_aqi <= 100) {
-                emojiIndex = 2;
-                statusMessage = "Moderate";
-                backgroundColor = "#ffff00"; // Yellow
-            } else if (final_aqi <= 150) {
-                emojiIndex = 3;
-                statusMessage = "Unhealthy for Sensitive Groups";
-                backgroundColor = "#ff7e00"; // Orange
-            } else if (final_aqi <= 200) {
-                emojiIndex = 4;
-                statusMessage = "Unhealthy";
-                backgroundColor = "#ff0000"; // Red
-            } else if (final_aqi <= 300) {
-                emojiIndex = 5;
-                statusMessage = "Very Unhealthy";
-                backgroundColor = "#8f3f97"; // Purple
-            } else {
-                emojiIndex = 6;
-                statusMessage = "Hazardous";
-                backgroundColor = "#7e0023"; // Maroon
-            }
-
-            airQualityIndex.textContent = `${AQI_EMOJIS[emojiIndex]} ${final_aqi}`;
-            airQualityStatus.textContent = statusMessage;
-            airQualityMessage.textContent = AQI_MESSAGES[emojiIndex];
-            airQualityWidget.style.backgroundColor = backgroundColor;
-
-            // 슬라이더 위치 조정
-            const sliderWidth = document.getElementById("airQualitySlider").offsetWidth;
-            sliderPointer.style.left = `${(final_aqi / 500) * sliderWidth}px`;
-        }
-
         function updateAirQuality(lat, lon) {
             fetch(`/api/air-quality/?lat=${lat}&lon=${lon}`)
                 .then(response => response.json())
                 .then(data => {
-                    const pm25 = data.components.pm2_5;
-                    const pm10 = data.components.pm10;
-                    updateAirQualityWidget(pm25, pm10);
+                    const aqi = data.main.aqi;
+                    let airQualityStatus = '';
+
+                    if (aqi >= 1 && aqi <= 50) {
+                        airQualityStatus = '대기 오염 수준: 좋음 (Good)';
+                    } else if (aqi >= 51 && aqi <= 100) {
+                        airQualityStatus = '대기 오염 수준: 보통 (Moderate)';
+                    } else if (aqi >= 101 && aqi <= 150) {
+                        airQualityStatus = '대기 오염 수준: 민감군에게 나쁨 (Unhealthy for Sensitive Groups)';
+                    } else if (aqi >= 151 && aqi <= 200) {
+                        airQualityStatus = '대기 오염 수준: 나쁨 (Unhealthy)';
+                    } else if (aqi >= 201 && aqi <= 300) {
+                        airQualityStatus = '대기 오염 수준: 매우 나쁨 (Very Unhealthy)';
+                    } else if (aqi > 300) {
+                        airQualityStatus = '대기 오염 수준: 위험 (Hazardous)';
+                    }
+
+                    document.getElementById('air_quality_status').innerText = airQualityStatus;
                 });
         }
 
@@ -574,7 +444,7 @@
         });
 
         function searchLocations(locationName) {
-            fetch(`${geocodeUrl}?text=${locationName}&key=${api_key}`)
+            fetch(`${geocodeUrl}?text=${locationName}&key=${apiKey}`)
                 .then(response => response.json())
                 .then(data => {
                     const searchResults = document.getElementById('searchResults');
@@ -708,32 +578,6 @@
                 alert('Failed to delete bookmark.');
             });
         }
-
-        // AQI 관련 상수
-        const AQI_EMOJIS = {
-            1: "😄",
-            2: "😐",
-            3: "😷",
-            4: "🤢",
-            5: "😫",
-            6: "💀"
-        };
-
-        const AQI_MESSAGES = {
-            1: "It's safe to go outside!",
-            2: "There are no major issues for the general public.",
-            3: "People with respiratory conditions should avoid going outside.",
-            4: "Avoid going outside and wear a mask if necessary.",
-            5: "Stay indoors and keep windows closed.",
-            6: "Absolutely avoid going outside, and use air filters to purify indoor air."
-        };
-
-        // 초기 AQI 계산 및 업데이트 호출
-        document.addEventListener('DOMContentLoaded', () => {
-            const pm25 = 134.37;  // 테스트용 기본 값
-            const pm10 = 156.25;  // 테스트용 기본 값
-            updateAirQualityWidget(pm25, pm10);
-        });
 
         // 뒤로가기 이벤트 처리
         window.onpopstate = function(event) {

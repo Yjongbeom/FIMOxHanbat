@@ -5,15 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9b68fc3-6ba0-4a3f-9d75-9e8a24ba4cb1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/nginx.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirement.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/air_quality.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/air_quality.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vnproject/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/vnproject/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/serializers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,8 +24,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/vnproject" />
-    <option name="ROOT_SYNC" value="SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -59,8 +53,6 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\kimhy\PycharmProjects\VnAtm\vnproject\config" />
-      <recent name="C:\Users\kimhy\PycharmProjects\VnAtm" />
       <recent name="C:\Users\kimhy\PycharmProjects\VnAtm\templates" />
       <recent name="C:\Users\kimhy\PycharmProjects\VnAtm\config" />
     </key>
@@ -81,9 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1723710514655</updated>
       <workItem from="1723710518256" duration="4761000" />
-      <workItem from="1723772325940" duration="17738000" />
-      <workItem from="1724032059592" duration="5990000" />
-      <workItem from="1724038118814" duration="881000" />
+      <workItem from="1723772325940" duration="10240000" />
     </task>
     <servers />
   </component>
