@@ -27,9 +27,8 @@ SECRET_KEY = env('SECRET_KEY')
 OPENWEATHERMAP_API_KEY = env('API_KEY')
 FRONT_API_KEY = env('FRONT_API_KEY')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -126,10 +125,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
 
 
 # Default primary key field type

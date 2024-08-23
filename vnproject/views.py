@@ -21,10 +21,24 @@ class AirQualityAPIView(APIView):
     def get(self, request, format=None):
         lat = request.GET.get('lat')
         lon = request.GET.get('lon')
+
+        # api_key = settings.AIR_QUALITY_API_KEY
+        #
+        # if lat and lon:
+        #     url = f'http://api.airvisual.com/v2/nearest_station?lat={lat}&lon={lon}&key={api_key}'
+        #     print(url)
+        #     response = requests.get(url)
+        #     data = response.json()
+        #
+        #     return Response(data)
+
         api_key = settings.OPENWEATHERMAP_API_KEY
+
+        print(lat, lon, api_key)
 
         if lat and lon:
             url = f'http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={api_key}'
+            print(url)
             response = requests.get(url)
             data = response.json()
 

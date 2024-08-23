@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Bookmark and Map Navigation with Geocoding</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         /* 기본 스타일 */
@@ -21,7 +19,7 @@
             width: 250px;
             height: 100%;
             position: fixed;
-            right: -300px; /* 사이드바 숨기기 */
+            right: -300px;
             top: 0;
             background: #f4f4f4;
             box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -30,7 +28,7 @@
             z-index: 1000;
         }
         #sidebar.active {
-            right: 0; /* 사이드바 보이기 */
+            right: 0;
         }
         #sidebar h2 {
             margin-top: 0;
@@ -41,22 +39,23 @@
             z-index: 1001;
             background-color: #007bff;
             color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border: none;
             padding: 10px 15px;
             cursor: pointer;
         }
 
         #loginButton {
-            right: 220px; /* 여유 간격 추가 */
+            right: 220px;
         }
 
         #registerButton {
-            right: 140px; /* 여유 간격 추가 */
+            right: 140px;
         }
 
         #logoutButton {
-            right: 140px; /* 여유 간격 추가 */
-            display: none; /* 로그아웃 버튼은 초기에는 숨김 */
+            right: 140px;
+            display: none;
         }
 
         #bookmarkButton {
@@ -65,6 +64,7 @@
         #closeSidebar {
             background-color: #dc3545;
             color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border: none;
             padding: 5px 10px;
             cursor: pointer;
@@ -82,6 +82,7 @@
         .delete-bookmark {
             background-color: #dc3545;
             color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border: none;
             padding: 5px 10px;
             cursor: pointer;
@@ -101,6 +102,7 @@
             z-index: 1001;
             background-color: #28a745;
             color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border: none;
             padding: 10px 15px;
             cursor: pointer;
@@ -129,6 +131,7 @@
             padding: 10px;
             background-color: #007bff;
             color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border: none;
             cursor: pointer;
         }
@@ -154,11 +157,20 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 400px;
-            min-width: 300px; /* 최소 너비를 설정하여 일정하게 유지 */
+            min-width: 300px;
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+
+        #authModalTitle,
+        label {
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000
         }
 
         .close {
-            color: #aaa;
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -166,7 +178,8 @@
 
         .close:hover,
         .close:focus {
-            color: black;
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             text-decoration: none;
             cursor: pointer;
         }
@@ -177,8 +190,9 @@
             align-items: center;
             justify-content: center;
             background-color: #007bff;
-            color: white;
             padding: 10px;
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             border-radius: 8px;
             margin: 20px;
             max-width: 500px;
@@ -188,12 +202,16 @@
             bottom: 80px;
             z-index: 1002;
         }
-        #airQualityWidget .content {
+
+         #airQualityWidget .content {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             font-size: 16px;
+            color: white;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
+
         #airQualityWidget .content span {
             margin-top: 5px;
         }
@@ -201,18 +219,19 @@
             margin-top: 10px;
             width: 100%;
             height: 10px;
-            background: linear-gradient(to right, #00e400, #ffff00, #ff7e00, #ff0000, #8f3f97, #7e0023);
+            background: linear-gradient(to right, #3966FC, #0BF907, #FEFE12, #F7A400, #FF0400, #993900);
             position: relative;
             border-radius: 5px;
         }
         #sliderPointer {
             width: 15px;
             height: 15px;
-            background: black;
+            background: #ffffff;
             border-radius: 50%;
             position: absolute;
             top: -3px;
-            transition: left 0.3s ease; /* 위치 변경에 애니메이션 효과 추가 */
+            transition: left 0.3s ease;
+            border: 2px solid #000000;
         }
         #airQualityWidget .message {
             margin-top: 10px;
@@ -221,7 +240,7 @@
     </style>
 </head>
 <body>
-    <h1>Search Location and Bookmark</h1>
+    <h1>　Vietnam</h1>
 
     <!-- 로그인 및 회원가입 버튼 -->
     <button id="loginButton">Login</button>
@@ -280,13 +299,13 @@
     <script>
         const api_key = '{{ api_key }}';
         const geocodeUrl = 'https://apis.wemap.asia/geocode-1/search';
-        let bookmarks = []; // 북마크 목록 저장
+        let bookmarks = [];
         let currentLat = 21.0285;  // 초기 위치 (하노이)
         let currentLon = 105.8542;
-        let selectedLocation = null;  // 선택된 위치를 저장할 변수
+        let selectedLocation = null;
         let loggedInUser = null;
 
-        const map = L.map('map').setView([currentLat, currentLon], 17); // 초기 줌 레벨을 더 높임
+        const map = L.map('map').setView([currentLat, currentLon], 17);
 
         // Wemap 래스터 타일 추가
         L.tileLayer(`https://apis.wemap.asia/raster-tiles/styles/osm-bright/{z}/{x}/{y}@2x.png?key=${api_key}`, {
@@ -325,7 +344,7 @@
             authModal.style.display = "block";
             document.getElementById("authModalTitle").innerText = "Register";
             document.getElementById("authSubmitButton").innerText = "Register";
-            // 초기화
+
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
@@ -337,7 +356,7 @@
             loginButton.style.display = 'inline';
             registerButton.style.display = 'inline';
             document.getElementById('bookmarkButton').style.display = 'none';
-            authForm.reset(); // 로그아웃 시 로그인 필드 초기화
+            authForm.reset();
         }
 
         closeModal.onclick = function() {
@@ -366,7 +385,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),  // 이 부분을 변경하여 사용자 입력 데이터를 전송
+                body: JSON.stringify(data),
             })
             .then(response => {
                 if (!response.ok) {
@@ -382,7 +401,7 @@
                 } else {
                     alert(isRegistering ? 'Registration successful!' : 'Login successful!');
                     authModal.style.display = 'none';
-                    authForm.reset(); // 로그인 필드 초기화
+                    authForm.reset();
                     loggedInUser = data.username;
                     loginButton.style.display = 'none';
                     registerButton.style.display = 'none';
@@ -428,8 +447,8 @@
             sidebar.classList.toggle('active');
 
             // Search input and results reset
-            document.getElementById('locationName').value = ''; // Clear the search input
-            document.getElementById('searchResults').innerHTML = ''; // Clear the search results
+            document.getElementById('locationName').value = '';
+            document.getElementById('searchResults').innerHTML = '';
         });
 
         // 사이드바 닫기
@@ -457,76 +476,110 @@
             return null;
         }
 
-        function updateAirQualityWidget(pm25, pm10) {
-            const pm25_breakpoints = [
-                [0.0, 12.0, 0, 50],
-                [12.1, 35.4, 51, 100],
-                [35.5, 55.4, 101, 150],
-                [55.5, 150.4, 151, 200],
-                [150.5, 250.4, 201, 300],
-                [250.5, 350.4, 301, 400],
-                [350.5, 500.4, 401, 500],
-            ];
+    function updateAirQualityWidget(pm25, pm10) {
+        const pm25_breakpoints = [
+            [0.0, 12.0, 0, 50],
+            [12.1, 35.4, 51, 100],
+            [35.5, 55.4, 101, 150],
+            [55.5, 150.4, 151, 200],
+            [150.5, 250.4, 201, 300],
+            [250.5, 350.4, 301, 400],
+            [350.5, 500.4, 401, 500],
+        ];
 
-            const pm10_breakpoints = [
-                [0, 54, 0, 50],
-                [55, 154, 51, 100],
-                [155, 254, 101, 150],
-                [255, 354, 151, 200],
-                [355, 424, 201, 300],
-                [425, 504, 301, 400],
-                [505, 604, 401, 500],
-            ];
+        const pm10_breakpoints = [
+            [0, 54, 0, 50],
+            [55, 154, 51, 100],
+            [155, 254, 101, 150],
+            [255, 354, 151, 200],
+            [355, 424, 201, 300],
+            [425, 504, 301, 400],
+            [505, 604, 401, 500],
+        ];
 
-            const aqi_pm25 = calculateAQI(pm25, pm25_breakpoints);
-            const aqi_pm10 = calculateAQI(pm10, pm10_breakpoints);
+        const aqi_pm25 = calculateAQI(pm25, pm25_breakpoints);
+        const aqi_pm10 = calculateAQI(pm10, pm10_breakpoints);
 
-            // 최종 AQI는 두 오염물질 중 더 높은 값으로 결정됩니다.
-            const final_aqi = Math.max(aqi_pm25, aqi_pm10);
+        const final_aqi = Math.max(aqi_pm25, aqi_pm10) - 50;
 
-            const airQualityIndex = document.getElementById("airQualityIndex");
-            const airQualityStatus = document.getElementById("airQualityStatus");
-            const airQualityMessage = document.getElementById("airQualityMessage");
-            const sliderPointer = document.getElementById("sliderPointer");
-            const airQualityWidget = document.getElementById("airQualityWidget");
+        const airQualityIndex = document.getElementById("airQualityIndex");
+        const airQualityStatus = document.getElementById("airQualityStatus");
+        const airQualityMessage = document.getElementById("airQualityMessage");
+        const sliderPointer = document.getElementById("sliderPointer");
+        const airQualityWidget = document.getElementById("airQualityWidget");
 
-            let emojiIndex, statusMessage, backgroundColor;
+        let emojiIndex, statusMessage;
 
-            if (final_aqi <= 50) {
-                emojiIndex = 1;
-                statusMessage = "Good";
-                backgroundColor = "#00e400"; // Green
-            } else if (final_aqi <= 100) {
-                emojiIndex = 2;
-                statusMessage = "Moderate";
-                backgroundColor = "#ffff00"; // Yellow
-            } else if (final_aqi <= 150) {
-                emojiIndex = 3;
-                statusMessage = "Unhealthy for Sensitive Groups";
-                backgroundColor = "#ff7e00"; // Orange
-            } else if (final_aqi <= 200) {
-                emojiIndex = 4;
-                statusMessage = "Unhealthy";
-                backgroundColor = "#ff0000"; // Red
-            } else if (final_aqi <= 300) {
-                emojiIndex = 5;
-                statusMessage = "Very Unhealthy";
-                backgroundColor = "#8f3f97"; // Purple
-            } else {
-                emojiIndex = 6;
-                statusMessage = "Hazardous";
-                backgroundColor = "#7e0023"; // Maroon
-            }
-
-            airQualityIndex.textContent = `${AQI_EMOJIS[emojiIndex]} ${final_aqi}`;
-            airQualityStatus.textContent = statusMessage;
-            airQualityMessage.textContent = AQI_MESSAGES[emojiIndex];
-            airQualityWidget.style.backgroundColor = backgroundColor;
-
-            // 슬라이더 위치 조정
-            const sliderWidth = document.getElementById("airQualitySlider").offsetWidth;
-            sliderPointer.style.left = `${(final_aqi / 500) * sliderWidth}px`;
+        if (final_aqi <= 50) {
+            emojiIndex = 1;
+            statusMessage = "Good";
+        } else if (final_aqi <= 100) {
+            emojiIndex = 2;
+            statusMessage = "Moderate";
+        } else if (final_aqi <= 150) {
+            emojiIndex = 3;
+            statusMessage = "Unhealthy for Sensitive Groups";
+        } else if (final_aqi <= 200) {
+            emojiIndex = 4;
+            statusMessage = "Unhealthy";
+        } else if (final_aqi <= 300) {
+            emojiIndex = 5;
+            statusMessage = "Very Unhealthy";
+        } else {
+            emojiIndex = 6;
+            statusMessage = "Hazardous";
         }
+
+        airQualityIndex.textContent = `${AQI_EMOJIS[emojiIndex]} ${final_aqi}`;
+        airQualityStatus.textContent = statusMessage;
+        airQualityMessage.textContent = AQI_MESSAGES[emojiIndex];
+
+        const sliderWidth = document.getElementById("airQualitySlider").offsetWidth;
+        const sliderPointerPosition = (final_aqi / 500) * sliderWidth;
+        sliderPointer.style.left = `${sliderPointerPosition}px`;
+
+        const gradientColors = [
+            { offset: 0, color: '#3966FC' },
+            { offset: 0.2, color: '#69EB56' },
+            { offset: 0.4, color: '#FEFE12' },
+            { offset: 0.6, color: '#F7A400' },
+            { offset: 0.8, color: '#FF0400' },
+            { offset: 1, color: '#993900' }
+        ];
+
+        function interpolateColor(color1, color2, factor) {
+            const result = color1.slice();
+            for (let i = 0; i < 3; i++) {
+                result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
+            }
+            return result;
+        }
+
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.slice(1), 16);
+            return [bigint >> 16 & 255, bigint >> 8 & 255, bigint & 255];
+        }
+
+        function rgbToHex(rgb) {
+            return `#${((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        let pointerOffset = sliderPointerPosition / sliderWidth;
+        let selectedColor;
+
+        for (let i = 0; i < gradientColors.length - 1; i++) {
+            if (pointerOffset >= gradientColors[i].offset && pointerOffset <= gradientColors[i + 1].offset) {
+                const color1 = hexToRgb(gradientColors[i].color);
+                const color2 = hexToRgb(gradientColors[i + 1].color);
+                const factor = (pointerOffset - gradientColors[i].offset) / (gradientColors[i + 1].offset - gradientColors[i].offset);
+                const interpolatedColor = interpolateColor(color1, color2, factor);
+                selectedColor = rgbToHex(interpolatedColor);
+                break;
+            }
+        }
+
+        airQualityWidget.style.backgroundColor = selectedColor;
+    }
 
         function updateAirQuality(lat, lon) {
             fetch(`/api/air-quality/?lat=${lat}&lon=${lon}`)
@@ -555,7 +608,7 @@
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // 지구 반경 (킬로미터)
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = 0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (1 - Math.cos(dLon)) / 2;
@@ -578,7 +631,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const searchResults = document.getElementById('searchResults');
-                    searchResults.innerHTML = ''; // 기존 결과 초기화
+                    searchResults.innerHTML = '';
                     if (data.features && data.features.length > 0) {
                         const sortedFeatures = data.features.map(feature => {
                             const lat = feature.geometry.coordinates[1];
@@ -596,11 +649,11 @@
                             item.className = 'search-result-item';
                             item.textContent = `${name} - ${distance.toFixed(2)} km`;
                             item.addEventListener('click', () => {
-                                map.setView([lat, lon], 18); // 검색 결과 클릭 시 더 높은 줌 레벨로 이동
+                                map.setView([lat, lon], 18);
                                 marker.setLatLng([lat, lon]);
-                                selectedLocation = { name, lat, lon }; // 선택된 위치 저장
-                                document.getElementById('okButton').style.display = 'block'; // OK 버튼 표시
-                                searchResults.innerHTML = ''; // 선택 후 검색 결과 목록 숨기기
+                                selectedLocation = { name, lat, lon };
+                                document.getElementById('okButton').style.display = 'block';
+                                searchResults.innerHTML = '';
                             });
                             searchResults.appendChild(item);
                         });
@@ -618,8 +671,8 @@
         document.getElementById('okButton').addEventListener('click', () => {
             if (selectedLocation) {
                 addBookmark(selectedLocation.name, selectedLocation.lat, selectedLocation.lon);
-                selectedLocation = null; // 선택된 위치 초기화
-                document.getElementById('okButton').style.display = 'none'; // OK 버튼 숨기기
+                selectedLocation = null;
+                document.getElementById('okButton').style.display = 'none';
             } else {
                 alert('No location selected.');
             }
@@ -628,7 +681,7 @@
         function addBookmark(name, lat, lon) {
             bookmarks.push({ name, lat, lon });
             renderBookmarks();
-            saveBookmarkToServer(name, lat, lon); // 북마크를 서버에 저장
+            saveBookmarkToServer(name, lat, lon);
         }
 
         function saveBookmarkToServer(name, lat, lon) {
@@ -656,7 +709,7 @@
 
         function renderBookmarks() {
             const bookmarkList = document.getElementById('bookmarkList');
-            bookmarkList.innerHTML = ''; // 기존 항목 초기화
+            bookmarkList.innerHTML = '';
 
             bookmarks.forEach((bookmark, index) => {
                 const item = document.createElement('div');
@@ -679,7 +732,7 @@
 
                 item.addEventListener('click', () => {
                     history.pushState({ lat: bookmark.lat, lon: bookmark.lon }, bookmark.name, `#${bookmark.name}`);
-                    map.setView([bookmark.lat, bookmark.lon], 18); // 북마크 클릭 시 더 높은 줌 레벨로 이동
+                    map.setView([bookmark.lat, bookmark.lon], 18);
                     marker.setLatLng([bookmark.lat, bookmark.lon]);
                     updateAirQuality(bookmark.lat, bookmark.lon);
                     document.getElementById('sidebar').classList.remove('active');
@@ -709,7 +762,6 @@
             });
         }
 
-        // AQI 관련 상수
         const AQI_EMOJIS = {
             1: "😄",
             2: "😐",
@@ -730,8 +782,8 @@
 
         // 초기 AQI 계산 및 업데이트 호출
         document.addEventListener('DOMContentLoaded', () => {
-            const pm25 = 134.37;  // 테스트용 기본 값
-            const pm10 = 156.25;  // 테스트용 기본 값
+            const pm25 = 134.37;
+            const pm10 = 156.25;
             updateAirQualityWidget(pm25, pm10);
         });
 
@@ -740,7 +792,7 @@
             if (event.state) {
                 const lat = event.state.lat;
                 const lon = event.state.lon;
-                map.setView([lat, lon], 18); // 뒤로가기 클릭 시 더 높은 줌 레벨로 이동
+                map.setView([lat, lon], 18);
                 marker.setLatLng([lat, lon]);
                 updateAirQuality(lat, lon);
             }

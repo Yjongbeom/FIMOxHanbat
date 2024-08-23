@@ -21,7 +21,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=150, unique=True)
-    bookmarks = models.JSONField(default=list)  # 북마크를 저장할 필드, 리스트 형태로 저장
+    bookmarks = models.JSONField(default=list)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 

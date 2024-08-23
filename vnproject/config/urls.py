@@ -20,7 +20,7 @@ from vnproject.views import air_quality_view, AirQualityAPIView, RegisterUserVie
 
 urlpatterns = [
     path('', air_quality_view, name='air_quality'),  # HTML 페이지 렌더링
-    path('api/air-quality/', AirQualityAPIView.as_view(), name='air_quality_api'),  # JSON 데이터 제공
+    path('api/air-quality/', AirQualityAPIView.as_view(), name='air_quality_api'),
     path('register/', RegisterUserView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('bookmarks/', BookmarkView.as_view(), name='bookmarks'),

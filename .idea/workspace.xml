@@ -5,15 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9b68fc3-6ba0-4a3f-9d75-9e8a24ba4cb1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/nginx.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirement.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirement.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/air_quality.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/air_quality.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vnproject/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/vnproject/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/templates/air_quality.html" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/templates/air_quality.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/serializers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vnproject/vnproject/views.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +35,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/vnproject" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -83,7 +89,14 @@
       <workItem from="1723710518256" duration="4761000" />
       <workItem from="1723772325940" duration="17738000" />
       <workItem from="1724032059592" duration="5990000" />
-      <workItem from="1724038118814" duration="881000" />
+      <workItem from="1724038118814" duration="4416000" />
+      <workItem from="1724050902726" duration="799000" />
+      <workItem from="1724051911844" duration="103000" />
+      <workItem from="1724118801497" duration="3778000" />
+      <workItem from="1724136451617" duration="3375000" />
+      <workItem from="1724206017424" duration="631000" />
+      <workItem from="1724290684262" duration="7477000" />
+      <workItem from="1724344093890" duration="1331000" />
     </task>
     <servers />
   </component>
