@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e9b68fc3-6ba0-4a3f-9d75-9e8a24ba4cb1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirement.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/air_quality.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/air_quality.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vnproject/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vnproject/templates/air_quality.html" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/templates/air_quality.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vnproject/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vnproject/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vnproject/vnproject/__init__.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/vnproject/vnproject/admin.py" beforeDir="false" />
@@ -96,7 +94,7 @@
       <workItem from="1724136451617" duration="3375000" />
       <workItem from="1724206017424" duration="631000" />
       <workItem from="1724290684262" duration="7477000" />
-      <workItem from="1724344093890" duration="1331000" />
+      <workItem from="1724344093890" duration="1625000" />
     </task>
     <servers />
   </component>

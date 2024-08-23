@@ -500,7 +500,7 @@
         const aqi_pm25 = calculateAQI(pm25, pm25_breakpoints);
         const aqi_pm10 = calculateAQI(pm10, pm10_breakpoints);
 
-        const final_aqi = Math.max(aqi_pm25, aqi_pm10) - 50;
+        const final_aqi = Math.max(aqi_pm25, aqi_pm10);
 
         const airQualityIndex = document.getElementById("airQualityIndex");
         const airQualityStatus = document.getElementById("airQualityStatus");
