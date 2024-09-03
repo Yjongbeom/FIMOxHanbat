@@ -5,10 +5,10 @@
 </p>
 
 ## Intership OverView
-- Duration: '2024.08.11 ~ 2024.08.24'
-- Country : 'Vietnam'
-- City : 'Hanoi'
-- Company : 'FIMO in Hanoi University'
+- Duration: 2024.08.11 ~ 2024.08.24
+- Country : Vietnam
+- City : Hanoi
+- Company : FIMO in Hanoi University
 
 ## Project Goals
 The VN RtTAP Project aims to:
