@@ -22,10 +22,14 @@ The VN RtTAP Project aims to:
 
 By integrating WeMap API and OpenWeatherAPI, our project is designed to deliver essential information and tools to users, enhancing their ability to manage air quality concerns effectively.
 
+<br></br>
+
 ## Features
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6a2544af-22f3-46e0-883e-5b7441e437b2" alt="ProjectView" width=400/>
 </p>
+
+<br></br>
 
 Real-Time Air Pollution Monitoring
 - Provides users with up-to-date air pollution levels based on their current location, including warnings displayed through both numerical values and color-coded alerts.
@@ -34,10 +38,14 @@ Real-Time Air Pollution Monitoring
 Bookmark Functionality
 - Allows users to save and organize locations by proximity, with locations listed from closest to farthest based on the user's current position. Users can easily save specific locations for future reference.
 
+<br></br>
+
 ## Air Pollution Levels and Design Guidelines
 <p align="center">
   <img src="https://github.com/user-attachments/assets/39f0a02d-9056-430f-825d-6f28f5fb85fc" alt="AirPollution Design" width=400/>
 </p>
+
+<br></br>
 
 ## Tech Stacks
 <p align="center">
