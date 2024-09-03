@@ -41,6 +41,6 @@ Bookmark Functionality
 
 ## Tech Stacks
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ec2e9003-ffc6-4ed4-b9fd-9f6b4d53bd97" alt="Tech Stacks" width=400/>
+  <img src="https://github.com/user-attachments/assets/ec2e9003-ffc6-4ed4-b9fd-9f6b4d53bd97" alt="Tech Stacks" width=1000/>
 </p>
 
