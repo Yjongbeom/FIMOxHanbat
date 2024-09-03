@@ -10,6 +10,8 @@
 - City : 'Hanoi'
 - Company : 'FIMO in Hanoi University'
 
+<br></br>
+
 ## Project Goals
 The VN RtTAP Project aims to:
 
@@ -28,8 +30,6 @@ By integrating WeMap API and OpenWeatherAPI, our project is designed to deliver 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6a2544af-22f3-46e0-883e-5b7441e437b2" alt="ProjectView" width=400/>
 </p>
-
-<br></br>
 
 Real-Time Air Pollution Monitoring
 - Provides users with up-to-date air pollution levels based on their current location, including warnings displayed through both numerical values and color-coded alerts.
